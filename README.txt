@@ -11,6 +11,8 @@ Starting with API-26 you must use a context-registered receiver.
 See the same URL as above:
     Context-registered receivers
 
+The button invokes two BroadcastReceivers: one in a class file and the other an inner class to the main activity.
+
 This code was tested on devices using
     google Nexus 7       Android 6.0.1  API=23 
     samsung SM-T820      Android 8.0.0  API=26 
