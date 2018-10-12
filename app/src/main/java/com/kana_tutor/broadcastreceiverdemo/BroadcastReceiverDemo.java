@@ -18,15 +18,29 @@
 package com.kana_tutor.broadcastreceiverdemo;
 
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 public class BroadcastReceiverDemo extends AppCompatActivity {
     private static final String TAG = BroadcastReceiverDemo.class.getSimpleName();
+
+
+    public class InnerBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context, "Inner class intent received", Toast.LENGTH_LONG)
+                 .show();
+            Log.d(TAG, "Inner class intent received:" + intent.toString());
+        }
+    }
+
 
     private static final String customIntentName = "com.kana_tutor.CUSTOM_INTENT";
     // broadcast a custom intent.
@@ -41,10 +55,13 @@ public class BroadcastReceiverDemo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.broadcast_receiver_demo);
 
-        BroadcastReceiver br = new CustomBroadcastReceiver();
+        BroadcastReceiver outerBR = new CustomBroadcastReceiver();
+        BroadcastReceiver innerBR = new InnerBroadcastReceiver();
+
         IntentFilter filter = new IntentFilter(customIntentName);
         filter.addAction(customIntentName);
-        this.registerReceiver(br, filter);
+        this.registerReceiver(outerBR, filter);
+        this.registerReceiver(innerBR, filter);
 
         findViewById(R.id.do_broadcast).setOnClickListener(new View.OnClickListener() {
             @Override
