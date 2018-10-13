@@ -19,7 +19,7 @@ This code was tested on devices using
     motorola XT830C      Android 4.4.4  API=19 
 
 Testing with adb:
-you can also run adb shell "am broadcast -a com.kana_tutor.CUSTOM_INTENT".  After running this you should see a toast message and on logcat you should see two messages saying:"Intent received:Intent..." and "inner class intent received" which means both the inner class BroadcastReceiver and the class BroadcastReceiver received the intent.
+you can also run adb shell "am broadcast -a com.kana_tutor.CUSTOM_INTENT".  After running this you should see a toast message and on logcat you should see three messages saying:"Intent received:Intent...", "inner class intent received" an d OnCreate inner class intent..." which means both the inner class BroadcastReceivers and the class BroadcastReceiver received the intent.
 
 
 Please let me know if you encounter problems.

@@ -35,6 +35,8 @@ public class BroadcastReceiverDemo extends AppCompatActivity {
     public class InnerBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            String testString = intent.getStringExtra("testString");
+            String bogusString = intent.getStringExtra("bogusString");
             Toast.makeText(context, "Inner class intent received", Toast.LENGTH_LONG)
                  .show();
             Log.d(TAG, "Inner class intent received:" + intent.toString());
@@ -47,21 +49,37 @@ public class BroadcastReceiverDemo extends AppCompatActivity {
     public void broadcastIntent(View view){
         Intent intent = new Intent();
         intent.setAction(customIntentName);
+        intent.putExtra("testString", "broadcast receiver test");
         sendBroadcast(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        class IBC extends BroadcastReceiver {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String testString = intent.getStringExtra("testString");
+                String bogusString = intent.getStringExtra("bogusString");
+                Toast.makeText(context, "Inner class intent received", Toast.LENGTH_LONG)
+                     .show();
+                Log.d(TAG, "OnCreate inner class intent received:" + intent.toString());
+            }
+        }
+
+
         setContentView(R.layout.broadcast_receiver_demo);
 
         BroadcastReceiver outerBR = new CustomBroadcastReceiver();
         BroadcastReceiver innerBR = new InnerBroadcastReceiver();
+        BroadcastReceiver innerInnerBR = new IBC();
 
         IntentFilter filter = new IntentFilter(customIntentName);
         filter.addAction(customIntentName);
+
         this.registerReceiver(outerBR, filter);
         this.registerReceiver(innerBR, filter);
+        this.registerReceiver(innerInnerBR, filter);
 
         findViewById(R.id.do_broadcast).setOnClickListener(new View.OnClickListener() {
             @Override
