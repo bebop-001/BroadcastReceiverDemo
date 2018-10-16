@@ -44,11 +44,11 @@ public class BroadcastReceiverDemo extends AppCompatActivity {
     }
 
 
-    private static final String customIntentName = "com.kana_tutor.CUSTOM_INTENT";
+    // private static final String customIntentName = "com.kana_tutor.CUSTOM_INTENT";
+    private static final String customIntentName = Intent.ACTION_CREATE_SHORTCUT;
     // broadcast a custom intent.
     public void broadcastIntent(View view){
-        Intent intent = new Intent();
-        intent.setAction(customIntentName);
+        Intent intent = new Intent(customIntentName);
         intent.putExtra("testString", "broadcast receiver test");
         sendBroadcast(intent);
     }
@@ -75,7 +75,6 @@ public class BroadcastReceiverDemo extends AppCompatActivity {
         BroadcastReceiver innerInnerBR = new IBC();
 
         IntentFilter filter = new IntentFilter(customIntentName);
-        filter.addAction(customIntentName);
 
         this.registerReceiver(outerBR, filter);
         this.registerReceiver(innerBR, filter);
