@@ -21,7 +21,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,8 +34,6 @@ public class BroadcastReceiverDemo extends AppCompatActivity {
     public class InnerBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String testString = intent.getStringExtra("testString");
-            String bogusString = intent.getStringExtra("bogusString");
             Toast.makeText(context, "Inner class intent received", Toast.LENGTH_LONG)
                  .show();
             Log.d(TAG, "Inner class intent received:" + intent.toString());
@@ -47,7 +44,7 @@ public class BroadcastReceiverDemo extends AppCompatActivity {
     // private static final String customIntentName = "com.kana_tutor.CUSTOM_INTENT";
     private static final String customIntentName = Intent.ACTION_CREATE_SHORTCUT;
     // broadcast a custom intent.
-    public void broadcastIntent(View view){
+    private void broadcastIntent(){
         Intent intent = new Intent(customIntentName);
         intent.putExtra("testString", "broadcast receiver test");
         sendBroadcast(intent);
@@ -59,13 +56,24 @@ public class BroadcastReceiverDemo extends AppCompatActivity {
         class IBC extends BroadcastReceiver {
             @Override
             public void onReceive(Context context, Intent intent) {
-                String testString = intent.getStringExtra("testString");
-                String bogusString = intent.getStringExtra("bogusString");
                 Toast.makeText(context, "Inner class intent received", Toast.LENGTH_LONG)
                      .show();
                 Log.d(TAG, "OnCreate inner class intent received:" + intent.toString());
             }
         }
+
+        String anonReceiverString = "anonymous_receiver";
+        registerReceiver(new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    Log.d(TAG, String.format(
+                        "Anonymous class intent received: activity = \"$1%s\""
+                            , intent.getAction()));
+                }
+            }
+            , new IntentFilter(anonReceiverString)
+        );
+        sendBroadcast(new Intent(anonReceiverString));
 
 
         setContentView(R.layout.broadcast_receiver_demo);
@@ -74,8 +82,8 @@ public class BroadcastReceiverDemo extends AppCompatActivity {
         BroadcastReceiver innerBR = new InnerBroadcastReceiver();
         BroadcastReceiver innerInnerBR = new IBC();
 
-        IntentFilter filter = new IntentFilter(customIntentName);
 
+        IntentFilter filter = new IntentFilter(customIntentName);
         this.registerReceiver(outerBR, filter);
         this.registerReceiver(innerBR, filter);
         this.registerReceiver(innerInnerBR, filter);
@@ -83,7 +91,7 @@ public class BroadcastReceiverDemo extends AppCompatActivity {
         findViewById(R.id.do_broadcast).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                broadcastIntent(v);
+                broadcastIntent();
             }
         });
     }
